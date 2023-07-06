@@ -1,0 +1,42 @@
+function emailPreppedJC() {
+  var jcBillingSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("JC Billing");
+  var numberedList = jcBillingSheet.getRange('K17:K100').getValues().flat().filter(Boolean);
+  var clients = jcBillingSheet.getRange('L17:L100').getValues().flat().filter(Boolean);
+  var area = jcBillingSheet.getRange('N17:N100').getValues().flat().filter(Boolean);
+  var hours = jcBillingSheet.getRange('O17:O100').getValues().flat().filter(Boolean);
+  var dollars = jcBillingSheet.getRange('P17:P100').getValues().flat().filter(Boolean);
+  var rangeOfNumberedList = jcBillingSheet.getRange('K101');
+  var valueOfNumberedList = rangeOfNumberedList.getValue();
+
+//the value of valueOfNumberedList is the sum of the value of numberedList. So basically, anytime there is a value in numberedList then valueOfNumberedList will be > 0 and will execute the function. 
+  if(valueOfNumberedList > 0){
+
+  var preppedValues = numberedList.map(function (value, index) {
+    var formattedDollars = dollars[index].toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+    return [value, clients[index], area[index], hours[index], formattedDollars];
+  });
+
+  var adminEmail = "admin@alliessupportedemployment.com";
+  var haydenEmail = "haydenj@alliessupportedemployment.com";
+
+  // Construct HTML table with CSS styles
+  var tableRows = preppedValues.map(function (row) {
+    var tableData = row.map(function (value) {
+      return "<td style='border: 1px solid black; padding: 5px;'>" + value + "</td>";
+    });
+    return "<tr>" + tableData.join("") + "</tr>";
+  });
+  var tableHTML = "<table style='border-collapse: collapse;'>" + tableRows.join("") + "</table>";
+
+  // Email template to recipients
+  var message = {
+    to: adminEmail + "," + haydenEmail,
+    subject: "List of Prepped JC Billing",
+    body: "Hello, <br><br>Below is a list of JC auths that have been prepped for billing:<br><br>" + tableHTML + "<br><br>Thank you,",
+    name: "ASE Management Team",
+    htmlBody: "Hello, <br><br>Below is a list of JC auths that have been prepped for billing:<br><br>" + tableHTML + "<br><br>Thank you,"
+  };
+
+  MailApp.sendEmail(message);
+  }
+}
