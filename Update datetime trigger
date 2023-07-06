@@ -1,0 +1,17 @@
+function dateTimeOnEdit(e) {
+  if (e && e.range) {
+    var editedSheetName = e.range.getSheet().getName();
+
+    if (editedSheetName === "Data for Timesheet" || editedSheetName === "Data for Mileage") {
+      var progressReportSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Progress Report");
+      var timeUpdateRange = progressReportSheet.getRange('I1:I2');
+      var timeUpdateValue = timeUpdateRange.getValue();
+
+      Logger.log("Time Update Value: " + timeUpdateValue); // Log the current value before updating
+
+      timeUpdateRange.setValue(new Date());
+
+      Logger.log("Time Updated!"); // Log a message indicating that the time has been updated
+    }
+  }
+}
