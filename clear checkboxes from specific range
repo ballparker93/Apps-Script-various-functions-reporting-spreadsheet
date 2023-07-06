@@ -1,0 +1,21 @@
+function clearJcCheckboxes() {
+  var jcSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("JC Billing");
+  var range = jcSheet.getRange('F2:G100');
+  var values = range.getValues();
+  
+  for (var i = 0; i < values.length; i++) {
+    values[i][0] = false; // Set each checkbox value to false
+  }
+  
+  range.setValues(values);
+
+  var tempJCSheet = "JC Billing Current Month";
+  var sheet = jcSheet.getSheetByName(tempJCSheet);
+  
+  if (sheet) {
+    jcSheet.deleteSheet(sheet);
+    console.log('Sheet deleted: ' + tempJCSheet);
+  } else {
+    console.log('Sheet not found: ' + tempJCSheet);
+  }
+}
